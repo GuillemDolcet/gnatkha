@@ -1,0 +1,65 @@
+volumes:
+    postgres:
+        name: 'postgres17'
+        driver: local
+
+    redis:
+        driver: local
+
+networks:
+    nw:
+        driver: bridge
+
+services:
+    db:
+        image: postgresql
+        environment:
+            - POSTGRES_USER=boiler
+            - POSTGRES_PASSWORD=boiler
+            - POSTGRES_DB=boiler
+        ports:
+            - 5432:5432
+        volumes:
+            - postgres:/var/lib/postgresql/data
+        networks:
+            - nw
+
+    redis:
+        image: redis
+        ports:
+            - 6379:6379
+        volumes:
+            - redis:/data
+        networks:
+            - nw
+
+    mailer:
+        image: mailhog/mailhog:v1.0.1
+        ports:
+            - 1025:1025
+            - 8025:8025
+        networks:
+            - nw
+
+    frontend:
+        image: nextjs
+        ports:
+            - 3000:3000
+        user: node
+        volumes:
+            - ./frontend:/srv/www/frontend
+        networks:
+            - nw
+
+    backend:
+        image: laravel
+        depends_on:
+            - db
+            - redis
+            - mailer
+        ports:
+            - 5000:5000
+        volumes:
+            - ./backend:/srv/www/backend
+        networks:
+            - nw

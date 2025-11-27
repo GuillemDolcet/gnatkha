@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -eux
+
+# Run a command or default server
+if [ $# -gt 0 ]; then
+    "$@"
+else
+    cd /srv/www/frontend; pnpm install && pnpm dev
+fi

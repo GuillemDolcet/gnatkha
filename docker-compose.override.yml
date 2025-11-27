@@ -1,0 +1,13 @@
+services:
+  backend:
+    image: laravel-xdebug
+    depends_on:
+      - db
+      - redis
+      - mailer
+    ports:
+      - 5000:5000
+    volumes:
+      - ./backend:/srv/www/backend
+    networks:
+      - nw

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Run a command or default server
+if [ $# -gt 0 ]; then
+    "$@"
+else
+    cd /srv/www/backend; composer install && /usr/sbin/apache2ctl -D FOREGROUND
+fi

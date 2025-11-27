@@ -1,0 +1,169 @@
+{
+  "auth": {
+    "before_getting_started_verify_email": "Before getting started, could you verify your email address by clicking on the link we just emailed to you?",
+    "create_account": "Create new account",
+    "didnt_receive_email": "If you didn't receive the email, we will gladly send you another.",
+    "dont_have_account_yet": "Don't have account yet?",
+    "dont_have_an_account": "Don't have an account?",
+    "email": "Email address",
+    "forget_it": "Forget it",
+    "forgot_password": "I forgot password",
+    "forgot_password_description": "Enter your email address and we will send you a password reset link.",
+    "forgot_your_password": "Forgot your password?",
+    "have_account_?": "Already have account?",
+    "login": "Login",
+    "login_github": "Login with Github",
+    "login_google": "Login with Google",
+    "login_to_your_account": "Login to your account",
+    "logout": "Logout",
+    "name": "Name",
+    "or_continue_with": "Or continue with",
+    "password": "Password",
+    "password_confirmation": "Confirm Password",
+    "placeholder_confirm_new_password": "Confirm your new password",
+    "placeholder_confirm_password": "Confirm your password",
+    "placeholder_email": "your@email.com",
+    "placeholder_name": "Your name",
+    "placeholder_new_password": "Your new password",
+    "placeholder_password": "Your password",
+    "remember_me": "Remember me",
+    "resend_verification_email": "Resend Verification Email",
+    "reset_password": "Reset your password",
+    "send_me_back": "send me back",
+    "send_reset_link": "Send me the reset link",
+    "sign_in": "Sign in",
+    "sign_up": "Sign up",
+    "thanks_for_signing_up": "Thanks for signing up!",
+    "to_the_sign_in": "to the sign in screen.",
+    "verify_email": "Verify your email",
+    "welcome_back": "Welcome back",
+    "your_password_has_been_reset": "Your password has been reset."
+  },
+  "errors": {
+    "credentials_do_not_match": "These credentials do not match our records.",
+    "email_exists": "We can't find a user with that email address.",
+    "email_invalid": "The email is invalid.",
+    "email_lowercase": "The email must be in lowercase.",
+    "email_max_255": "The email must not be greater than 255 characters.",
+    "email_required": "The email is required.",
+    "email_string": "The email must be a string.",
+    "email_unique": "The email has already been taken.",
+    "incorrect_password": "The provided password is incorrect.",
+    "invalid_password_reset_token": "This password reset token is invalid.",
+    "name_max_255": "The name must not be greater than 255 characters.",
+    "name_required": "The name is required.",
+    "name_string": "The name must be a string.",
+    "password_confirmed": "The password confirmation does not match.",
+    "password_min_8": "The password must be at least 8 characters.",
+    "password_required": "The password is required.",
+    "password_string": "The password must be a string.",
+    "token_required": "The token is required.",
+    "unknown": "Unknown error",
+    "user_not_found_with_email": "We can't find a user with that email address.",
+    "wait_before_retrying": "Wait before retrying",
+    "throttle_error": "Too many attempts. Please try again in a few minutes.",
+    "invalid_invitation_code": "The invitation code is not valid",
+    "already_member": "You are already a member of this pack",
+    "user_not_member": "The user is not a member of this pack",
+    "admin_cannot_leave": "The leader cannot leave the pack. Transfer leadership first or delete the pack."
+  },
+  "languages": {
+    "en": "English",
+    "es": "Spanish"
+  },
+  "status": {
+    "password_reset_link_sent": "We have emailed your password reset link.",
+    "success_password_reset": "Your password has been reset.",
+    "server_error": "Oops… something went wrong. Please try again in a few minutes.",
+    "success_password_reset_link_sent": "We have emailed your password reset link.",
+    "success_resend_verification_email": "A new verification link has been sent to the email address you provided during registration.",
+    "error_create_user": "An error occurred while creating your account. Please try again later.",
+    "throttle_error": "Too many attempts. Please try again in a few minutes.",
+    "invalid_signature": "The token provided is invalid or has expired."
+  },
+  "sidebar": {
+    "my_packs": "My packs"
+  },
+  "packs": {
+    "title": "Pack Management",
+    "your_packs": "Your Packs",
+    "empty": "You don't have any packs yet. Create one or join with a code!",
+    "role": {
+      "admin": "Pack Leader",
+      "member": "Member"
+    },
+    "members_count": "{count, plural, =0 {No members} =1 {1 member} other {# members}}",
+    "actions": {
+      "settings": "Settings",
+      "invite": "Invite",
+      "leave": "Leave",
+      "delete": "Delete"
+    },
+    "create": {
+      "card_title": "Create Your Own Pack",
+      "card_description": "Start managing your pets and invite your partner or friends.",
+      "button": "Create New Pack",
+      "modal_title": "Create New Pack",
+      "modal_description": "Give your pack a name. You can invite members later.",
+      "name_label": "Pack name",
+      "name_placeholder": "E.g: The García Pack",
+      "cancel": "Cancel",
+      "submit": "Create Pack",
+      "submitting": "Creating..."
+    },
+    "join": {
+      "card_title": "Been invited? Join the pack.",
+      "card_description": "Enter the 8-character code sent by the pack leader.",
+      "placeholder": "ABC12345",
+      "button": "Join",
+      "submitting": "Joining..."
+    },
+    "invite": {
+      "title": "Invite to pack",
+      "description": "Share this code with whoever you want to invite to {name}.",
+      "copied": "Code copied!",
+      "instructions": "The invitee will need to enter this code in the \"Join a pack\" section."
+    },
+    "leave": {
+      "confirm_title": "Leave pack",
+      "confirm_description": "Are you sure you want to leave {name}? You will lose access to pets and shared data.",
+      "cancel": "Cancel",
+      "confirm_action": "Leave"
+    },
+    "settings": {
+      "title": "Settings for {name}",
+      "description": "Manage your pack members.",
+      "members_title": "Members",
+      "delete_pack": "Delete pack",
+      "confirm": {
+        "cancel": "Cancel",
+        "remove_title": "Remove member",
+        "remove_description": "Are you sure you want to remove {name} from the pack?",
+        "remove_action": "Remove",
+        "transfer_title": "Transfer leadership",
+        "transfer_description": "Are you sure you want to transfer leadership to {name}? You will lose admin permissions.",
+        "transfer_action": "Transfer",
+        "delete_title": "Delete pack",
+        "delete_description": "Are you sure you want to delete this pack? This action cannot be undone and all members will be removed.",
+        "delete_action": "Delete pack"
+      }
+    },
+    "toast": {
+      "pack_created": "Pack created successfully",
+      "pack_deleted": "Pack deleted successfully",
+      "pack_joined": "You have joined the pack",
+      "pack_left": "You have left the pack",
+      "member_removed": "Member removed successfully",
+      "admin_transferred": "Leadership transferred successfully",
+      "error_forbidden": "You don't have permission to perform this action",
+      "error_not_found": "The resource doesn't exist or has been deleted",
+      "error_unknown": "An unexpected error occurred"
+    },
+    "validation": {
+      "invalid_invitation_code": "The invitation code is not valid",
+      "already_member": "You are already a member of this pack",
+      "user_not_member": "The user is not a member of this pack",
+      "admin_cannot_leave": "The leader cannot leave the pack. Transfer leadership first or delete the pack."
+    }
+  }
+}
