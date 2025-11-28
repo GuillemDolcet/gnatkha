@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { IconPlus } from "@tabler/icons-react";
 import AnimalCard from "@/components/animals/AnimalCard";
 import AnimalCardSkeleton from "@/components/animals/AnimalCardSkeleton";
-import CreateAnimalModal from "@/components/animals/CreateAnimalModal";
+import AnimalFormModal from "@/components/animals/AnimalFormModal";
 import { useAnimals } from "@/hooks/animals";
 import { useAnimalTypes } from "@/hooks/animalTypes";
 import { usePacks } from "@/hooks/packs";
@@ -164,13 +164,19 @@ export default function AnimalsPage() {
                 )}
             </div>
 
-            <CreateAnimalModal
+            <AnimalFormModal
                 open={createOpen}
                 onOpenChange={setCreateOpen}
                 packs={packs}
                 animalTypes={animalTypes}
-                onCreate={createAnimal}
                 defaultPackId={defaultPackId}
+                onSubmit={async (data) => {
+                    if (!data.pack_id) return { success: false, error: 'unknown' as const };
+                    return createAnimal({
+                        ...data,
+                        pack_id: data.pack_id,
+                    });
+                }}
             />
         </div>
     );

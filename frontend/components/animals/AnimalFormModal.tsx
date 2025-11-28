@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useMemo, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -21,84 +21,113 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { IconPhoto, IconCheck } from "@tabler/icons-react";
-import { Animal, AnimalSex } from "@/types/animal";
+import { Animal, AnimalType, AnimalSex } from "@/types/animal";
+import { Pack } from "@/types/pack";
 import { ErrorMessageType } from "@/types/common";
-import { useAnimalTypes } from "@/hooks/animalTypes";
 
 interface ActionResult {
     success: boolean;
     error?: 'forbidden' | 'not_found' | 'unknown';
 }
 
-interface EditAnimalModalProps {
-    animal: Animal;
-    open: boolean;
-    onOpenChange: (open: boolean) => void;
-    onUpdate: (animalId: number, data: {
-        name: string;
-        animal_type_id: number;
-        breed?: string;
-        birth_date?: string;
-        sex?: AnimalSex;
-        weight?: number;
-        chip_number?: string;
-        notes?: string;
-        image?: File;
-        default_image_id?: number;
-        setErrors: React.Dispatch<React.SetStateAction<Record<string, ErrorMessageType[]>>>;
-    }) => Promise<ActionResult>;
+interface AnimalFormData {
+    name: string;
+    animal_type_id: number;
+    pack_id?: number;
+    breed?: string;
+    birth_date?: string;
+    sex?: AnimalSex;
+    weight?: number;
+    chip_number?: string;
+    notes?: string;
+    image?: File;
+    default_image_id?: number;
+    setErrors: React.Dispatch<React.SetStateAction<Record<string, ErrorMessageType[]>>>;
 }
 
-export default function EditAnimalModal({
-                                            animal,
+interface AnimalFormModalProps {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+    animalTypes: AnimalType[];
+    packs?: Pack[];
+    animal?: Animal | null;
+    defaultPackId?: number | null;
+    onSubmit: (data: AnimalFormData, animalId?: number) => Promise<ActionResult>;
+}
+
+export default function AnimalFormModal({
                                             open,
                                             onOpenChange,
-                                            onUpdate,
-                                        }: EditAnimalModalProps) {
-    const t = useTranslations('animals.edit');
-    const tCreate = useTranslations('animals.create');
+                                            animalTypes,
+                                            packs,
+                                            animal,
+                                            defaultPackId,
+                                            onSubmit,
+                                        }: AnimalFormModalProps) {
+    const t = useTranslations('animals');
     const tSex = useTranslations('animals.sex');
     const tTypes = useTranslations('animals.types');
     const tToast = useTranslations('animals.toast');
-    const { animalTypes } = useAnimalTypes();
 
-    const [name, setName] = useState(animal.name);
-    const [animalTypeId, setAnimalTypeId] = useState(animal.type.id.toString());
-    const [breed, setBreed] = useState(animal.breed || '');
-    const [birthDate, setBirthDate] = useState(animal.birth_date || '');
-    const [sex, setSex] = useState<string>(animal.sex || 'unknown');
-    const [weight, setWeight] = useState(animal.weight?.toString() || '');
-    const [chipNumber, setChipNumber] = useState(animal.chip_number || '');
-    const [notes, setNotes] = useState(animal.notes || '');
+    const isEditing = !!animal;
+
+    const [name, setName] = useState('');
+    const [animalTypeId, setAnimalTypeId] = useState<string>('');
+    const [packId, setPackId] = useState<string>('');
+    const [breed, setBreed] = useState('');
+    const [birthDate, setBirthDate] = useState('');
+    const [sex, setSex] = useState<string>('unknown');
+    const [weight, setWeight] = useState('');
+    const [chipNumber, setChipNumber] = useState('');
+    const [notes, setNotes] = useState('');
     const [image, setImage] = useState<File | null>(null);
-    const [imagePreview, setImagePreview] = useState<string | null>(animal.image_url || null);
-    const [selectedDefaultImageId, setSelectedDefaultImageId] = useState<number | null>(animal.default_image_id || null);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [selectedDefaultImageId, setSelectedDefaultImageId] = useState<number | null>(null);
     const [errors, setErrors] = useState<Record<string, ErrorMessageType[]>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    // Inicializar/resetear formulario cuando se abre o cambia el animal
+    useEffect(() => {
+        if (open) {
+            if (animal) {
+                // Modo edición
+                setName(animal.name);
+                setAnimalTypeId(animal.type.id.toString());
+                setPackId(animal.pack_id.toString());
+                setBreed(animal.breed || '');
+                setBirthDate(animal.birth_date || '');
+                setSex(animal.sex || 'unknown');
+                setWeight(animal.weight?.toString() || '');
+                setChipNumber(animal.chip_number || '');
+                setNotes(animal.notes || '');
+                setImage(null);
+                setImagePreview(animal.image_url || null);
+                setSelectedDefaultImageId(animal.default_image_id || null);
+            } else {
+                // Modo creación
+                setName('');
+                setAnimalTypeId('');
+                setPackId(defaultPackId?.toString() ?? '');
+                setBreed('');
+                setBirthDate('');
+                setSex('unknown');
+                setWeight('');
+                setChipNumber('');
+                setNotes('');
+                setImage(null);
+                setImagePreview(null);
+                setSelectedDefaultImageId(null);
+            }
+            setErrors({});
+        }
+    }, [open, animal, defaultPackId]);
 
     const selectedType = useMemo(() => {
         return animalTypes.find(t => t.id.toString() === animalTypeId);
     }, [animalTypes, animalTypeId]);
 
     const defaultImages = selectedType?.default_images ?? [];
-
-    useEffect(() => {
-        if (open) {
-            setName(animal.name);
-            setAnimalTypeId(animal.type.id.toString());
-            setBreed(animal.breed || '');
-            setBirthDate(animal.birth_date || '');
-            setSex(animal.sex || 'unknown');
-            setWeight(animal.weight?.toString() || '');
-            setChipNumber(animal.chip_number || '');
-            setNotes(animal.notes || '');
-            setImage(null);
-            setImagePreview(animal.image_url || null);
-            setSelectedDefaultImageId(animal.default_image_id || null);
-            setErrors({});
-        }
-    }, [open, animal]);
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -122,14 +151,19 @@ export default function EditAnimalModal({
     const handleTypeChange = (value: string) => {
         setAnimalTypeId(value);
         setSelectedDefaultImageId(null);
+        setImage(null);
+        setImagePreview(null);
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!name.trim() || !animalTypeId) return;
+
+        const isPackRequired = !isEditing && packs && packs.length > 0;
+        if (!name.trim() || !animalTypeId || (isPackRequired && !packId)) return;
 
         setIsSubmitting(true);
-        const result = await onUpdate(animal.id, {
+
+        const data: AnimalFormData = {
             name: name.trim(),
             animal_type_id: parseInt(animalTypeId),
             breed: breed.trim() || undefined,
@@ -141,82 +175,125 @@ export default function EditAnimalModal({
             image: image || undefined,
             default_image_id: selectedDefaultImageId || undefined,
             setErrors,
-        });
+        };
+
+        // Solo incluir pack_id en creación
+        if (!isEditing && packId) {
+            data.pack_id = parseInt(packId);
+        }
+
+        const result = await onSubmit(data, animal?.id);
         setIsSubmitting(false);
 
         if (result.success) {
-            toast.success(tToast('animal_updated'));
+            toast.success(isEditing ? tToast('animal_updated') : tToast('animal_created'));
             onOpenChange(false);
         }
     };
 
+    const handleOpenChange = (isOpen: boolean) => {
+        onOpenChange(isOpen);
+    };
+
+    const isFormValid = () => {
+        if (!name.trim() || !animalTypeId) return false;
+        if (!isEditing && packs && packs.length > 0 && !packId) return false;
+        return true;
+    };
+
     return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
+        <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto">
                 <form onSubmit={handleSubmit}>
                     <DialogHeader>
-                        <DialogTitle>{t('title')}</DialogTitle>
+                        <DialogTitle>
+                            {isEditing ? t('edit.title') : t('create.title')}
+                        </DialogTitle>
                         <DialogDescription>
-                            {t('description')}
+                            {isEditing ? t('edit.description') : t('create.description')}
                         </DialogDescription>
                     </DialogHeader>
 
                     <div className="py-4 space-y-4">
                         <div className="w-full">
-                            <Label htmlFor="edit-animal-name">{tCreate('name_label')}</Label>
+                            <Label htmlFor="animal-name">{t('create.name_label')}</Label>
                             <Input
-                                id="edit-animal-name"
+                                id="animal-name"
                                 type="text"
                                 name="name"
                                 value={name}
                                 set={setName}
                                 setErrors={setErrors}
                                 errors={errors?.name}
-                                placeholder={tCreate('name_placeholder')}
+                                placeholder={t('create.name_placeholder')}
                                 className="mt-1 w-full"
                             />
                         </div>
 
-                        <div className="w-full">
-                            <Label htmlFor="edit-animal-type">{tCreate('type_label')}</Label>
-                            <Select value={animalTypeId} onValueChange={handleTypeChange}>
-                                <SelectTrigger className="mt-1 w-full cursor-pointer">
-                                    <SelectValue placeholder={tCreate('type_placeholder')} />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {animalTypes.map(type => (
-                                        <SelectItem
-                                            key={type.id}
-                                            value={type.id.toString()}
-                                            className="cursor-pointer"
-                                        >
-                                            {tTypes(type.key)}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                        <div className={`grid gap-4 grid-cols-1 ${!isEditing && packs ? 'md:grid-cols-2' : ''}`}>
+                            <div className="w-full">
+                                <Label htmlFor="animal-type">{t('create.type_label')}</Label>
+                                <Select value={animalTypeId} onValueChange={handleTypeChange}>
+                                    <SelectTrigger className="mt-1 w-full cursor-pointer">
+                                        <SelectValue placeholder={t('create.type_placeholder')} />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {animalTypes.map(type => (
+                                            <SelectItem
+                                                key={type.id}
+                                                value={type.id.toString()}
+                                                className="cursor-pointer"
+                                            >
+                                                {tTypes(type.key)}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            {!isEditing && packs && (
+                                <div className="w-full">
+                                    <Label htmlFor="animal-pack">{t('create.pack_label')}</Label>
+                                    <Select value={packId} onValueChange={setPackId}>
+                                        <SelectTrigger className="mt-1 w-full cursor-pointer">
+                                            <SelectValue placeholder={t('create.pack_placeholder')} />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {packs.map(pack => (
+                                                <SelectItem
+                                                    key={pack.id}
+                                                    value={pack.id.toString()}
+                                                    className="cursor-pointer"
+                                                >
+                                                    {pack.name}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            )}
                         </div>
 
                         <div className="w-full">
-                            <Label htmlFor="edit-animal-breed">{tCreate('breed_label')}</Label>
+                            <Label htmlFor="animal-breed">{t('create.breed_label')}</Label>
                             <Input
-                                id="edit-animal-breed"
+                                id="animal-breed"
                                 type="text"
                                 name="breed"
                                 value={breed}
                                 set={setBreed}
                                 setErrors={setErrors}
                                 errors={errors?.breed}
-                                placeholder={tCreate('breed_placeholder')}
+                                placeholder={t('create.breed_placeholder')}
                                 className="mt-1 w-full"
                             />
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="w-full">
-                                <Label htmlFor="edit-animal-birth-date">{tCreate('birth_date_label')}</Label>
+                                <Label htmlFor="animal-birth-date">{t('create.birth_date_label')}</Label>
                                 <Input
-                                    id="edit-animal-birth-date"
+                                    id="animal-birth-date"
                                     type="date"
                                     name="birth_date"
                                     value={birthDate}
@@ -229,10 +306,10 @@ export default function EditAnimalModal({
                             </div>
 
                             <div className="w-full">
-                                <Label htmlFor="edit-animal-sex">{tCreate('sex_label')}</Label>
+                                <Label htmlFor="animal-sex">{t('create.sex_label')}</Label>
                                 <Select value={sex} onValueChange={setSex}>
                                     <SelectTrigger className="mt-1 w-full cursor-pointer">
-                                        <SelectValue placeholder={tCreate('sex_placeholder')} />
+                                        <SelectValue placeholder={t('create.sex_placeholder')} />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="male" className="cursor-pointer">{tSex('male')}</SelectItem>
@@ -243,18 +320,18 @@ export default function EditAnimalModal({
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="w-full">
-                                <Label htmlFor="edit-animal-weight">{tCreate('weight_label')}</Label>
+                                <Label htmlFor="animal-weight">{t('create.weight_label')}</Label>
                                 <Input
-                                    id="edit-animal-weight"
+                                    id="animal-weight"
                                     type="number"
                                     name="weight"
                                     value={weight}
                                     set={setWeight}
                                     setErrors={setErrors}
                                     errors={errors?.weight}
-                                    placeholder={tCreate('weight_placeholder')}
+                                    placeholder={t('create.weight_placeholder')}
                                     className="mt-1 w-full"
                                     min="0"
                                     step="0.01"
@@ -262,39 +339,39 @@ export default function EditAnimalModal({
                             </div>
 
                             <div className="w-full">
-                                <Label htmlFor="edit-animal-chip">{tCreate('chip_label')}</Label>
+                                <Label htmlFor="animal-chip">{t('create.chip_label')}</Label>
                                 <Input
-                                    id="edit-animal-chip"
+                                    id="animal-chip"
                                     type="text"
                                     name="chip_number"
                                     value={chipNumber}
                                     set={setChipNumber}
                                     setErrors={setErrors}
                                     errors={errors?.chip_number}
-                                    placeholder={tCreate('chip_placeholder')}
+                                    placeholder={t('create.chip_placeholder')}
                                     className="mt-1 w-full"
                                 />
                             </div>
                         </div>
 
                         <div className="w-full">
-                            <Label htmlFor="edit-animal-notes">{tCreate('notes_label')}</Label>
+                            <Label htmlFor="animal-notes">{t('create.notes_label')}</Label>
                             <Textarea
-                                id="edit-animal-notes"
+                                id="animal-notes"
                                 name="notes"
                                 value={notes}
                                 onChange={(e) => setNotes(e.target.value)}
-                                placeholder={tCreate('notes_placeholder')}
+                                placeholder={t('create.notes_placeholder')}
                                 className="mt-1 w-full min-h-[80px]"
                             />
                         </div>
 
                         <div className="w-full">
-                            <Label>{tCreate('image_label')}</Label>
+                            <Label>{t('create.image_label')}</Label>
 
                             {defaultImages.length > 0 && (
                                 <div className="mt-2 mb-3">
-                                    <p className="text-sm text-muted-foreground mb-2">{tCreate('default_images')}</p>
+                                    <p className="text-sm text-muted-foreground mb-2">{t('create.default_images')}</p>
                                     <div className="grid grid-cols-5 gap-2">
                                         {defaultImages.map(img => (
                                             <button
@@ -343,7 +420,7 @@ export default function EditAnimalModal({
                                 ) : (
                                     <div className="flex flex-col items-center text-muted-foreground">
                                         <IconPhoto className="w-8 h-8 mb-2" />
-                                        <span className="text-sm">{tCreate('image_placeholder')}</span>
+                                        <span className="text-sm">{t('create.image_placeholder')}</span>
                                     </div>
                                 )}
                             </div>
@@ -355,16 +432,19 @@ export default function EditAnimalModal({
                             type="button"
                             variant="outline"
                             className="cursor-pointer"
-                            onClick={() => onOpenChange(false)}
+                            onClick={() => handleOpenChange(false)}
                         >
-                            {t('cancel')}
+                            {t('create.cancel')}
                         </Button>
                         <Button
                             type="submit"
-                            disabled={!name.trim() || !animalTypeId || isSubmitting}
+                            disabled={!isFormValid() || isSubmitting}
                             className="cursor-pointer"
                         >
-                            {isSubmitting ? t('submitting') : t('submit')}
+                            {isSubmitting
+                                ? (isEditing ? t('edit.submitting') : t('create.submitting'))
+                                : (isEditing ? t('edit.submit') : t('create.submit'))
+                            }
                         </Button>
                     </DialogFooter>
                 </form>

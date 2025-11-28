@@ -36,7 +36,7 @@ import { Animal } from "@/types/animal";
 import { useAnimals } from "@/hooks/animals";
 import { useAnimalTypes } from "@/hooks/animalTypes";
 import { usePacks } from "@/hooks/packs";
-import EditAnimalModal from "@/components/animals/EditAnimalModal";
+import AnimalFormModal from "@/components/animals/AnimalFormModal";
 
 export default function AnimalDetailPage() {
     const t = useTranslations('animals');
@@ -316,11 +316,15 @@ export default function AnimalDetailPage() {
             </div>
 
             {animal && (
-                <EditAnimalModal
-                    animal={animal}
+                <AnimalFormModal
                     open={editOpen}
                     onOpenChange={setEditOpen}
-                    onUpdate={handleUpdate}
+                    animalTypes={animalTypes}
+                    animal={animal}
+                    onSubmit={async (data, animalId) => {
+                        if (!animalId) return { success: false, error: 'unknown' as const };
+                        return handleUpdate(animalId, data);
+                    }}
                 />
             )}
 

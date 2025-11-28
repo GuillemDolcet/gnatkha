@@ -17,7 +17,8 @@ import {
 import { IconPencil, IconTrash } from "@tabler/icons-react";
 import { Animal } from "@/types/animal";
 import { ErrorMessageType } from "@/types/common";
-import EditAnimalModal from "@/components/animals/EditAnimalModal";
+import { useAnimalTypes } from "@/hooks/animalTypes";
+import AnimalFormModal from "@/components/animals/AnimalFormModal";
 
 interface ActionResult {
     success: boolean;
@@ -41,6 +42,7 @@ export default function AnimalCard({ animal, isAdmin, onUpdate, onDelete }: Anim
     const t = useTranslations('animals');
     const tTypes = useTranslations('animals.types');
     const tToast = useTranslations('animals.toast');
+    const { animalTypes } = useAnimalTypes();
 
     const [editOpen, setEditOpen] = useState(false);
     const [deleteOpen, setDeleteOpen] = useState(false);
@@ -78,6 +80,11 @@ export default function AnimalCard({ animal, isAdmin, onUpdate, onDelete }: Anim
         e.preventDefault();
         e.stopPropagation();
         setDeleteOpen(true);
+    };
+
+    const handleSubmit = async (data: Parameters<typeof onUpdate>[1], animalId?: number) => {
+        if (!animalId) return { success: false, error: 'unknown' as const };
+        return onUpdate(animalId, data);
     };
 
     return (
@@ -141,11 +148,12 @@ export default function AnimalCard({ animal, isAdmin, onUpdate, onDelete }: Anim
                 </Card>
             </Link>
 
-            <EditAnimalModal
-                animal={animal}
+            <AnimalFormModal
                 open={editOpen}
                 onOpenChange={setEditOpen}
-                onUpdate={onUpdate}
+                animalTypes={animalTypes}
+                animal={animal}
+                onSubmit={handleSubmit}
             />
 
             <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
