@@ -1,8 +1,9 @@
 import { useCallback, useState } from "react";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
-import { IconDoorExit, IconLink, IconSettings, IconUser } from "@tabler/icons-react";
+import { IconDoorExit, IconLink, IconSettings, IconUser, IconPaw } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import {
     AlertDialog,
@@ -96,6 +97,13 @@ export default function PackCard({
                 </div>
 
                 <div className="mt-6 flex flex-wrap gap-2">
+                    <Link
+                        href={`/dashboard/animals?pack=${pack.id}`}
+                        className="flex-1 min-w-fit inline-flex items-center justify-center rounded-md text-sm font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"
+                    >
+                        <IconPaw className="w-4 h-4 mr-2" />
+                        {t('actions.pets')}
+                    </Link>
                     {pack.is_admin ? (
                         <>
                             <Button

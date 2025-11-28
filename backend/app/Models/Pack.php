@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Auth;
 
 class Pack extends Model
@@ -56,6 +57,11 @@ class Pack extends Model
     public function admins(): BelongsToMany
     {
         return $this->members()->wherePivot('is_admin', true);
+    }
+
+    public function animals(): HasMany
+    {
+        return $this->hasMany(Animal::class);
     }
 
     /**

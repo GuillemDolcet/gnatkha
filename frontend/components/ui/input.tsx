@@ -1,8 +1,14 @@
 'use client';
 
-import {cn} from "@/lib/utils";
-import {useTranslations} from "next-intl";
-import React from 'react';
+import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
+import React, { useState } from 'react';
+
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { Button } from "@/components/ui/button";
+import { CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
 
 interface ErrorMessageType {
     code?: string;
@@ -10,7 +16,7 @@ interface ErrorMessageType {
 }
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-    type: "text" | "password" | "email";
+    type: "text" | "password" | "email" | "date" | "number";
     errors?: ErrorMessageType[];
     name: string;
     setErrors: React.Dispatch<React.SetStateAction<Record<string, ErrorMessageType[]>>>;
@@ -27,13 +33,17 @@ export default function Input({
                                   type,
                                   ...props
                               }: InputProps) {
+
     const translations = useTranslations('errors');
+    const hasErrors = errors && errors.length > 0;
+
+    const [dateValue, setDateValue] = useState<Date | undefined>(undefined);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         set(event.target.value);
 
         setErrors((prevErrors) => {
-            const newErrors = {...prevErrors};
+            const newErrors = { ...prevErrors };
             if (newErrors[name]) {
                 delete newErrors[name];
             }
@@ -42,22 +52,70 @@ export default function Input({
     };
 
     function getErrorMessageType(err: string | ErrorMessageType) {
-        if (typeof err === "string") {
-            return err;
-        }
+        if (typeof err === "string") return err;
 
         if (typeof err === "object" && err.code) {
             if (translations.has(err.code)) {
                 return translations(err.code);
             }
-
             return err.message ?? err.code;
         }
 
         return translations('unknown');
     }
 
-    const hasErrors = errors && errors.length > 0;
+    // ---------- DATE PICKER ----------
+    if (type === "date") {
+        return (
+            <div className="w-full py-1">
+                <Popover>
+                    <PopoverTrigger asChild>
+                        <Button
+                            variant="outline"
+                            disabled={disabled}
+                            className={cn(
+                                "w-full justify-start text-left font-normal h-9 cursor-pointer",
+                                !dateValue && "text-muted-foreground",
+                                hasErrors &&
+                                "border-destructive focus-visible:ring-destructive/40"
+                            )}
+                        >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {dateValue ? format(dateValue, "dd-MM-yyyy") : "Seleccionar fecha"}
+                        </Button>
+                    </PopoverTrigger>
+
+                    <PopoverContent align="start">
+                        <Calendar
+                            mode="single"
+                            captionLayout="dropdown"
+                            selected={dateValue}
+                            onSelect={(day) => {
+                                setDateValue(day ?? undefined);
+                                set(day ? format(day, "dd-MM-yyyy") : "");
+
+                                setErrors(prev => {
+                                    const newErr = { ...prev };
+                                    delete newErr[name];
+                                    return newErr;
+                                });
+                            }}
+                            disabled={disabled}
+                        />
+                    </PopoverContent>
+                </Popover>
+
+                {hasErrors && (
+                    <div className="text-xs mt-1 mb-1 text-red-700">
+                        {errors.map((err, i) => (
+                            <div key={i}>{getErrorMessageType(err)}</div>
+                        ))}
+                    </div>
+                )}
+            </div>
+        );
+    }
+    // ---------- FIN DATE PICKER ----------
 
     return (
         <>
@@ -76,17 +134,14 @@ export default function Input({
                 aria-invalid={hasErrors}
                 {...props}
             />
-            {
-                hasErrors && (
-                    <div className="text-xs mb-1 text-red-700">
-                        {errors.map((err, index) => (
-                            <div key={index}>
-                                {getErrorMessageType(err)}
-                            </div>
-                        ))}
-                    </div>
-                )
-            }
+
+            {hasErrors && (
+                <div className="text-xs mb-1 text-red-700">
+                    {errors.map((err, index) => (
+                        <div key={index}>{getErrorMessageType(err)}</div>
+                    ))}
+                </div>
+            )}
         </>
     );
 }

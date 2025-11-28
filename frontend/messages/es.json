@@ -65,7 +65,17 @@
     "invalid_invitation_code": "El código de invitación no es válido",
     "already_member": "Ya eres miembro de esta manada",
     "user_not_member": "El usuario no es miembro de esta manada",
-    "admin_cannot_leave": "El líder no puede abandonar la manada. Transfiere el liderazgo primero o elimina la manada."
+    "admin_cannot_leave": "El líder no puede abandonar la manada. Transfiere el liderazgo primero o elimina la manada.",
+    "name_min": "El nombre debe tener al menos 1 carácter",
+    "name_max": "El nombre no puede tener más de 255 caracteres",
+    "animal_type_id_required": "El tipo de animal es obligatorio",
+    "animal_type_id_exists": "El tipo de animal no es válido",
+    "pack_id_required": "La manada es obligatoria",
+    "pack_id_exists": "La manada no es válida",
+    "breed_max": "La raza no puede tener más de 255 caracteres",
+    "image_image": "El archivo debe ser una imagen",
+    "image_mimes": "La imagen debe ser jpeg, png, jpg, gif o webp",
+    "image_max": "La imagen no puede superar los 5MB"
   },
   "languages": {
     "en": "Inglés",
@@ -82,7 +92,8 @@
     "invalid_signature": "El token proporcionado es inválido o ha expirado."
   },
   "sidebar": {
-    "my_packs": "Mis manadas"
+    "my_packs": "Mis manadas",
+    "animals": "Mis mascotas"
   },
   "packs": {
     "title": "Gestión de Manadas",
@@ -97,7 +108,8 @@
       "settings": "Ajustes",
       "invite": "Invitar",
       "leave": "Abandonar",
-      "delete": "Eliminar"
+      "delete": "Eliminar",
+      "pets": "Mascotas"
     },
     "create": {
       "card_title": "Crea tu Propia Manada",
@@ -164,6 +176,125 @@
       "already_member": "Ya eres miembro de esta manada",
       "user_not_member": "El usuario no es miembro de esta manada",
       "admin_cannot_leave": "El líder no puede abandonar la manada. Transfiere el liderazgo primero o elimina la manada."
+    }
+  },
+  "animals": {
+    "title": "Mis Mascotas",
+    "empty": "No tienes mascotas registradas en esta manada.",
+    "empty_all": "No tienes mascotas registradas en ninguna manada.",
+    "no_packs": "Primero debes crear o unirte a una manada.",
+    "pack_pets": "Mascotas de esta manada",
+    "add_button": "Añadir Mascota",
+    "add_to_pack": "Añadir",
+    "pack_filter": "Manada:",
+    "card": {
+      "breed": "Raza: {breed}",
+      "no_breed": "Raza no especificada"
+    },
+    "sex": {
+      "male": "Macho",
+      "female": "Hembra",
+      "unknown": "Desconocido"
+    },
+    "detail": {
+      "back": "Volver",
+      "not_found": "Mascota no encontrada",
+      "age": "Edad",
+      "age_days": "{days} días",
+      "age_months": "{months} meses",
+      "age_years": "{years} años",
+      "age_years_months": "{years} años y {months} meses",
+      "sex": "Sexo",
+      "weight": "Peso",
+      "chip": "Microchip",
+      "pack": "Manada",
+      "notes": "Notas"
+    },
+    "create": {
+      "title": "Añadir Nueva Mascota",
+      "description": "Registra una nueva mascota en tu manada.",
+      "name_label": "Nombre",
+      "name_placeholder": "Ej: Max",
+      "type_label": "Tipo de animal",
+      "type_placeholder": "Selecciona un tipo",
+      "breed_label": "Raza (opcional)",
+      "breed_placeholder": "Ej: Labrador",
+      "birth_date_label": "Fecha de nacimiento (opcional)",
+      "birth_placeholder": "Selecciona una fecha",
+      "sex_label": "Sexo",
+      "sex_placeholder": "Selecciona el sexo",
+      "weight_label": "Peso en kg (opcional)",
+      "weight_placeholder": "Ej: 12.5",
+      "chip_label": "Número de microchip (opcional)",
+      "chip_placeholder": "Ej: 941000012345678",
+      "notes_label": "Notas (opcional)",
+      "notes_placeholder": "Información adicional sobre tu mascota...",
+      "image_label": "Foto (opcional)",
+      "image_placeholder": "Subir imagen personalizada",
+      "default_images": "O selecciona una imagen predeterminada:",
+      "pack_label": "Manada",
+      "pack_placeholder": "Selecciona una manada",
+      "cancel": "Cancelar",
+      "submit": "Añadir Mascota",
+      "submitting": "Añadiendo..."
+    },
+    "edit": {
+      "title": "Editar Mascota",
+      "description": "Modifica los datos de tu mascota.",
+      "button": "Editar",
+      "cancel": "Cancelar",
+      "submit": "Guardar Cambios",
+      "submitting": "Guardando..."
+    },
+    "delete": {
+      "title": "Eliminar Mascota",
+      "description": "¿Estás seguro de que quieres eliminar a {name}? Esta acción no se puede deshacer.",
+      "cancel": "Cancelar",
+      "confirm": "Eliminar"
+    },
+    "types": {
+      "dog": "Perro",
+      "cat": "Gato",
+      "bird": "Pájaro",
+      "fish": "Pez",
+      "rabbit": "Conejo",
+      "hamster": "Hámster",
+      "guinea_pig": "Cobaya",
+      "turtle": "Tortuga",
+      "snake": "Serpiente",
+      "lizard": "Lagarto",
+      "ferret": "Hurón",
+      "horse": "Caballo",
+      "other": "Otro"
+    },
+    "toast": {
+      "animal_created": "Mascota añadida correctamente",
+      "animal_updated": "Mascota actualizada correctamente",
+      "animal_deleted": "Mascota eliminada correctamente",
+      "error_forbidden": "No tienes permisos para realizar esta acción",
+      "error_not_found": "La mascota no existe o ha sido eliminada",
+      "error_unknown": "Ha ocurrido un error inesperado"
+    },
+    "errors": {
+      "name_required": "El nombre es obligatorio",
+      "name_min": "El nombre debe tener al menos 1 carácter",
+      "name_max": "El nombre no puede tener más de 255 caracteres",
+      "animal_type_id_required": "El tipo de animal es obligatorio",
+      "animal_type_id_exists": "El tipo de animal no es válido",
+      "pack_id_required": "La manada es obligatoria",
+      "pack_id_exists": "La manada no es válida",
+      "breed_max": "La raza no puede tener más de 255 caracteres",
+      "birth_date_date": "La fecha de nacimiento no es válida",
+      "birth_date_before_or_equal": "La fecha de nacimiento no puede ser futura",
+      "sex_in": "El sexo seleccionado no es válido",
+      "weight_numeric": "El peso debe ser un número",
+      "weight_min": "El peso no puede ser negativo",
+      "weight_max": "El peso no puede superar los 9999.99 kg",
+      "chip_number_max": "El número de chip no puede tener más de 255 caracteres",
+      "notes_max": "Las notas no pueden tener más de 5000 caracteres",
+      "image_image": "El archivo debe ser una imagen",
+      "image_mimes": "La imagen debe ser jpeg, png, jpg, gif o webp",
+      "image_max": "La imagen no puede superar los 5MB"
     }
   }
 }
