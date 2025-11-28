@@ -65,7 +65,17 @@
     "invalid_invitation_code": "The invitation code is not valid",
     "already_member": "You are already a member of this pack",
     "user_not_member": "The user is not a member of this pack",
-    "admin_cannot_leave": "The leader cannot leave the pack. Transfer leadership first or delete the pack."
+    "admin_cannot_leave": "The leader cannot leave the pack. Transfer leadership first or delete the pack.",
+    "name_min": "The name must be at least 1 character",
+    "name_max": "The name cannot be more than 255 characters",
+    "animal_type_id_required": "The animal type is required",
+    "animal_type_id_exists": "The animal type is not valid",
+    "pack_id_required": "The pack is required",
+    "pack_id_exists": "The pack is not valid",
+    "breed_max": "The breed cannot be more than 255 characters",
+    "image_image": "The file must be an image",
+    "image_mimes": "The image must be jpeg, png, jpg, gif or webp",
+    "image_max": "The image cannot exceed 5MB"
   },
   "languages": {
     "en": "English",
@@ -82,7 +92,8 @@
     "invalid_signature": "The token provided is invalid or has expired."
   },
   "sidebar": {
-    "my_packs": "My packs"
+    "my_packs": "My packs",
+    "animals": "My pets"
   },
   "packs": {
     "title": "Pack Management",
@@ -97,7 +108,8 @@
       "settings": "Settings",
       "invite": "Invite",
       "leave": "Leave",
-      "delete": "Delete"
+      "delete": "Delete",
+      "pets": "Pets"
     },
     "create": {
       "card_title": "Create Your Own Pack",
@@ -164,6 +176,125 @@
       "already_member": "You are already a member of this pack",
       "user_not_member": "The user is not a member of this pack",
       "admin_cannot_leave": "The leader cannot leave the pack. Transfer leadership first or delete the pack."
+    }
+  },
+  "animals": {
+    "title": "My Pets",
+    "empty": "You don't have any pets registered in this pack.",
+    "empty_all": "You don't have any pets registered in any pack.",
+    "no_packs": "You need to create or join a pack first.",
+    "pack_pets": "Pets in this pack",
+    "add_button": "Add Pet",
+    "add_to_pack": "Add",
+    "pack_filter": "Pack:",
+    "card": {
+      "breed": "Breed: {breed}",
+      "no_breed": "Breed not specified"
+    },
+    "sex": {
+      "male": "Male",
+      "female": "Female",
+      "unknown": "Unknown"
+    },
+    "detail": {
+      "back": "Back",
+      "not_found": "Pet not found",
+      "age": "Age",
+      "age_days": "{days} days",
+      "age_months": "{months} months",
+      "age_years": "{years} years",
+      "age_years_months": "{years} years and {months} months",
+      "sex": "Sex",
+      "weight": "Weight",
+      "chip": "Microchip",
+      "pack": "Pack",
+      "notes": "Notes"
+    },
+    "create": {
+      "title": "Add New Pet",
+      "description": "Register a new pet in your pack.",
+      "name_label": "Name",
+      "name_placeholder": "E.g: Max",
+      "type_label": "Animal type",
+      "type_placeholder": "Select a type",
+      "breed_label": "Breed (optional)",
+      "breed_placeholder": "E.g: Labrador",
+      "birth_date_label": "Birth date (optional)",
+      "birth_placeholder": "Select a date",
+      "sex_label": "Sex",
+      "sex_placeholder": "Select sex",
+      "weight_label": "Weight in kg (optional)",
+      "weight_placeholder": "E.g: 12.5",
+      "chip_label": "Microchip number (optional)",
+      "chip_placeholder": "E.g: 941000012345678",
+      "notes_label": "Notes (optional)",
+      "notes_placeholder": "Additional information about your pet...",
+      "image_label": "Photo (optional)",
+      "image_placeholder": "Upload custom image",
+      "default_images": "Or select a default image:",
+      "pack_label": "Pack",
+      "pack_placeholder": "Select a pack",
+      "cancel": "Cancel",
+      "submit": "Add Pet",
+      "submitting": "Adding..."
+    },
+    "edit": {
+      "title": "Edit Pet",
+      "description": "Modify your pet's information.",
+      "button": "Edit",
+      "cancel": "Cancel",
+      "submit": "Save Changes",
+      "submitting": "Saving..."
+    },
+    "delete": {
+      "title": "Delete Pet",
+      "description": "Are you sure you want to delete {name}? This action cannot be undone.",
+      "cancel": "Cancel",
+      "confirm": "Delete"
+    },
+    "types": {
+      "dog": "Dog",
+      "cat": "Cat",
+      "bird": "Bird",
+      "fish": "Fish",
+      "rabbit": "Rabbit",
+      "hamster": "Hamster",
+      "guinea_pig": "Guinea Pig",
+      "turtle": "Turtle",
+      "snake": "Snake",
+      "lizard": "Lizard",
+      "ferret": "Ferret",
+      "horse": "Horse",
+      "other": "Other"
+    },
+    "toast": {
+      "animal_created": "Pet added successfully",
+      "animal_updated": "Pet updated successfully",
+      "animal_deleted": "Pet deleted successfully",
+      "error_forbidden": "You don't have permission to perform this action",
+      "error_not_found": "The pet doesn't exist or has been deleted",
+      "error_unknown": "An unexpected error occurred"
+    },
+    "errors": {
+      "name_required": "The name is required",
+      "name_min": "The name must be at least 1 character",
+      "name_max": "The name cannot be more than 255 characters",
+      "animal_type_id_required": "The animal type is required",
+      "animal_type_id_exists": "The animal type is not valid",
+      "pack_id_required": "The pack is required",
+      "pack_id_exists": "The pack is not valid",
+      "breed_max": "The breed cannot be more than 255 characters",
+      "birth_date_date": "The birth date is not valid",
+      "birth_date_before_or_equal": "The birth date cannot be in the future",
+      "sex_in": "The selected sex is not valid",
+      "weight_numeric": "The weight must be a number",
+      "weight_min": "The weight cannot be negative",
+      "weight_max": "The weight cannot exceed 9999.99 kg",
+      "chip_number_max": "The chip number cannot be more than 255 characters",
+      "notes_max": "The notes cannot be more than 5000 characters",
+      "image_image": "The file must be an image",
+      "image_mimes": "The image must be jpeg, png, jpg, gif or webp",
+      "image_max": "The image cannot exceed 5MB"
     }
   }
 }

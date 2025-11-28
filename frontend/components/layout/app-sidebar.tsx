@@ -22,6 +22,7 @@ import {useTranslations} from "next-intl";
 
 const navItems = [
     { name: "my_packs", icon: IconDog, href: "/dashboard/packs" },
+    { name: "animals", icon: IconDog, href: "/dashboard/animals" },
 ];
 
 export function AppSidebar() {
