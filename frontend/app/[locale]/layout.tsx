@@ -29,8 +29,12 @@ export default async function LocaleLayout({
 
     return (
         <html lang={locale} suppressHydrationWarning>
-            <body className={inter.className}>
-                <NextIntlClientProvider messages={messages}>
+        <head>
+            <link rel="manifest" href="/manifest.json"/>
+            <meta name="theme-color" content="#0ea5e9"/>
+        </head>
+        <body className={inter.className}>
+        <NextIntlClientProvider messages={messages}>
                     <ThemeProvider
                         attribute="class"
                         defaultTheme="system"

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Animal extends Model
 {
@@ -51,5 +52,21 @@ class Animal extends Model
     public function defaultImage(): BelongsTo
     {
         return $this->belongsTo(DefaultAnimalImage::class, 'default_image_id');
+    }
+
+    /**
+     * Get all reminders for this animal.
+     */
+    public function reminders(): HasMany
+    {
+        return $this->hasMany(Reminder::class);
+    }
+
+    /**
+     * Get all task logs for this animal.
+     */
+    public function taskLogs(): HasMany
+    {
+        return $this->hasMany(TaskLog::class);
     }
 }

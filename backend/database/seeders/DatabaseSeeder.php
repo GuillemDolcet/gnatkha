@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             ProviderSeeder::class,
             AnimalTypeSeeder::class,
             DefaultAnimalImageSeeder::class,
+            TaskTypeSeeder::class
         ]);
     }
 }
