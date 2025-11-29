@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -14,7 +13,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { IconPencil, IconTrash, IconClock, IconCalendar } from "@tabler/icons-react";
+import { IconPencil, IconTrash, IconPlayerPlay, IconPlayerPause } from "@tabler/icons-react";
 import { Reminder } from "@/types/task";
 import TaskTypeIcon from "./TaskTypeIcon";
 
@@ -64,26 +63,34 @@ export default function ReminderCard({
         if (!dateStr) return null;
         const date = new Date(dateStr);
         const now = new Date();
-        const diffMs = date.getTime() - now.getTime();
-        const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-        if (diffHours < 0) return t('reminders.next') + ': ' + t('logs.today');
-        if (diffHours < 24) return t('reminders.next') + ': ' + t('logs.today') + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        if (diffDays === 1) return t('reminders.next') + ': Mañana ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        return t('reminders.next') + ': ' + date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        // Comparar solo fechas (sin hora)
+        const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        const todayOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const tomorrowOnly = new Date(todayOnly);
+        tomorrowOnly.setDate(tomorrowOnly.getDate() + 1);
+
+        const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        if (dateOnly.getTime() === todayOnly.getTime()) {
+            return `${t('logs.today')} ${timeStr}`;
+        }
+        if (dateOnly.getTime() === tomorrowOnly.getTime()) {
+            return `${t('reminders.tomorrow')} ${timeStr}`;
+        }
+        return `${date.toLocaleDateString()} ${timeStr}`;
     };
 
-    const getFrequencyText = () => {
+    const getFrequencyBadge = () => {
         switch (reminder.frequency) {
             case 'daily':
-                return `${t('frequency.daily')} - ${reminder.time_of_day}`;
+                return t('frequency.daily');
             case 'weekly':
-                return `${t('frequency.weekly')} - ${t(`days.${reminder.day_of_week}`)} ${reminder.time_of_day}`;
+                return `${t(`days.${reminder.day_of_week}`)}`;
             case 'monthly':
-                return `${t('frequency.monthly')} - ${t('form.day_of_month_label')} ${reminder.day_of_month}, ${reminder.time_of_day}`;
+                return `${t('frequency.monthly')}`;
             case 'once':
-                return `${t('frequency.once')} - ${reminder.specific_date} ${reminder.time_of_day}`;
+                return t('frequency.once');
             default:
                 return '';
         }
@@ -91,74 +98,74 @@ export default function ReminderCard({
 
     return (
         <>
-            <Card className={`p-4 ${!reminder.is_active ? 'opacity-50' : ''}`}>
-                <div className="flex items-start gap-3">
-                    <div
-                        className="p-2 rounded-full shrink-0"
-                        style={{ backgroundColor: `${reminder.task_type.color}20` }}
-                    >
-                        <TaskTypeIcon
-                            taskKey={reminder.task_type.key}
-                            className="w-5 h-5"
-                            style={{ color: reminder.task_type.color }}
-                        />
-                    </div>
+            <div className={`flex items-center gap-3 p-3 rounded-lg border ${!reminder.is_active ? 'opacity-50 bg-muted/30' : 'bg-card'}`}>
+                <div
+                    className="p-2 rounded-full shrink-0"
+                    style={{ backgroundColor: `${reminder.task_type.color}20` }}
+                >
+                    <TaskTypeIcon
+                        taskKey={reminder.task_type.key}
+                        className="w-5 h-5"
+                        style={{ color: reminder.task_type.color }}
+                    />
+                </div>
 
-                    <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between gap-2">
-                            <h3 className="font-semibold truncate">{reminder.title}</h3>
-                            <Switch
-                                checked={reminder.is_active}
-                                onCheckedChange={handleToggle}
-                                disabled={isToggling}
-                                className="shrink-0"
-                            />
-                        </div>
-
+                <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                        <span className="font-medium truncate">{reminder.title}</span>
                         {showAnimal && reminder.animal && (
-                            <p className="text-sm text-muted-foreground">{reminder.animal.name}</p>
+                            <span className="text-xs text-muted-foreground">· {reminder.animal.name}</span>
                         )}
-
-                        <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-                            <IconClock className="w-4 h-4" />
-                            <span>{getFrequencyText()}</span>
-                        </div>
-
+                    </div>
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
+                        <Badge variant="outline" className="text-xs px-1.5 py-0">
+                            {getFrequencyBadge()}
+                        </Badge>
+                        <span>{reminder.time_of_day}</span>
                         {reminder.is_active && reminder.next_occurrence && (
-                            <div className="flex items-center gap-1 text-sm text-primary mt-1">
-                                <IconCalendar className="w-4 h-4" />
-                                <span>{formatNextOccurrence(reminder.next_occurrence)}</span>
-                            </div>
-                        )}
-
-                        {reminder.description && (
-                            <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
-                                {reminder.description}
-                            </p>
+                            <>
+                                <span>·</span>
+                                <span className="text-primary">{formatNextOccurrence(reminder.next_occurrence)}</span>
+                            </>
                         )}
                     </div>
                 </div>
 
-                <div className="flex justify-end gap-2 mt-3 pt-3 border-t">
+                <div className="flex items-center gap-1 shrink-0">
                     <Button
                         variant="ghost"
-                        size="sm"
-                        className="cursor-pointer"
-                        onClick={() => onEdit(reminder)}
+                        size="icon"
+                        className="cursor-pointer h-8 w-8"
+                        onClick={handleToggle}
+                        disabled={isToggling}
+                        title={reminder.is_active ? t('reminders.pause') : t('reminders.activate')}
                     >
-                        <IconPencil className="w-4 h-4 mr-1" />
-                        {t('form.save')}
+                        {reminder.is_active ? (
+                            <IconPlayerPause className="w-4 h-4" />
+                        ) : (
+                            <IconPlayerPlay className="w-4 h-4" />
+                        )}
                     </Button>
                     <Button
                         variant="ghost"
-                        size="sm"
-                        className="cursor-pointer text-destructive hover:text-destructive"
+                        size="icon"
+                        className="cursor-pointer h-8 w-8"
+                        onClick={() => onEdit(reminder)}
+                        title={t('edit.button')}
+                    >
+                        <IconPencil className="w-4 h-4" />
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="cursor-pointer h-8 w-8 text-destructive hover:text-destructive"
                         onClick={() => setDeleteOpen(true)}
+                        title={t('delete_reminder.confirm')}
                     >
                         <IconTrash className="w-4 h-4" />
                     </Button>
                 </div>
-            </Card>
+            </div>
 
             <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
                 <AlertDialogContent>

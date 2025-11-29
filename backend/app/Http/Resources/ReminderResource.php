@@ -14,11 +14,15 @@ class ReminderResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        if (!$this->relationLoaded('taskType')) {
+            $this->load('taskType');
+        }
+
         return [
             'id' => $this->id,
             'animal_id' => $this->animal_id,
             'animal' => new AnimalResource($this->whenLoaded('animal')),
-            'task_type' => new TaskTypeResource($this->whenLoaded('taskType')),
+            'task_type' => $this->taskType ? new TaskTypeResource($this->taskType) : null,
             'creator' => new UserResource($this->whenLoaded('creator')),
             'title' => $this->title,
             'description' => $this->description,

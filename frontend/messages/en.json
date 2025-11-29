@@ -93,7 +93,8 @@
   },
   "sidebar": {
     "my_packs": "My packs",
-    "animals": "My pets"
+    "animals": "My pets",
+    "reminders": "My reminders"
   },
   "packs": {
     "title": "Pack Management",
@@ -307,7 +308,10 @@
       "none_upcoming": "No upcoming reminders",
       "next": "Next",
       "active": "Active",
-      "inactive": "Inactive"
+      "inactive": "Paused",
+      "pause": "Pause",
+      "activate": "Activate",
+      "tomorrow": "Tomorrow"
     },
     "logs": {
       "title": "History",
@@ -378,6 +382,9 @@
     "edit_reminder": {
       "title": "Edit Reminder",
       "description": "Modify the reminder settings"
+    },
+    "edit": {
+      "button": "Edit"
     },
     "delete_reminder": {
       "title": "Delete Reminder",

@@ -81,6 +81,8 @@ class RemindersRepository
      */
     public function create(array $data): Reminder
     {
+        $data['is_active'] = $data['is_active'] ?? true;
+
         $reminder = new Reminder($data);
         $reminder->calculateNextOccurrence();
         $reminder->save();
@@ -119,6 +121,6 @@ class RemindersRepository
         }
         $reminder->save();
 
-        return $reminder;
+        return $reminder->load(['taskType', 'creator', 'animal']);
     }
 }

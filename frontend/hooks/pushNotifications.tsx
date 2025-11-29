@@ -6,6 +6,7 @@ interface UsePushNotificationsReturn {
     permission: NotificationPermission | 'unsupported';
     isSubscribed: boolean;
     isLoading: boolean;
+    error: string | null;
     subscribe: () => Promise<boolean>;
     unsubscribe: () => Promise<boolean>;
 }
@@ -15,6 +16,7 @@ export const usePushNotifications = (): UsePushNotificationsReturn => {
     const [permission, setPermission] = useState<NotificationPermission | 'unsupported'>('unsupported');
     const [isSubscribed, setIsSubscribed] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         // Check if push notifications are supported
@@ -29,11 +31,35 @@ export const usePushNotifications = (): UsePushNotificationsReturn => {
 
     const checkSubscription = async () => {
         try {
-            const registration = await navigator.serviceWorker.ready;
-            const subscription = await registration.pushManager.getSubscription();
-            setIsSubscribed(!!subscription);
+            const registration = await navigator.serviceWorker.getRegistration();
+            if (registration) {
+                const subscription = await registration.pushManager.getSubscription();
+                setIsSubscribed(!!subscription);
+            }
         } catch {
             setIsSubscribed(false);
+        }
+    };
+
+    const registerServiceWorker = async (): Promise<ServiceWorkerRegistration | null> => {
+        try {
+            // Check if already registered
+            let registration = await navigator.serviceWorker.getRegistration();
+
+            if (!registration) {
+                // Register the service worker
+                registration = await navigator.serviceWorker.register('/sw.js', {
+                    scope: '/',
+                });
+                console.log('Service Worker registered:', registration);
+            }
+
+            // Wait for it to be ready
+            await navigator.serviceWorker.ready;
+            return registration;
+        } catch (err) {
+            console.error('Service Worker registration failed:', err);
+            return null;
         }
     };
 
@@ -41,7 +67,8 @@ export const usePushNotifications = (): UsePushNotificationsReturn => {
         try {
             const res = await axios.get('/api/push/vapid-public-key');
             return res.data.publicKey;
-        } catch {
+        } catch (err) {
+            console.error('Failed to get VAPID key:', err);
             return null;
         }
     };
@@ -62,34 +89,57 @@ export const usePushNotifications = (): UsePushNotificationsReturn => {
     };
 
     const subscribe = useCallback(async (): Promise<boolean> => {
-        if (!isSupported) return false;
+        if (!isSupported) {
+            setError('Push notifications not supported');
+            return false;
+        }
 
         setIsLoading(true);
+        setError(null);
+
         try {
-            // Request permission
+            // Step 1: Request notification permission
+            console.log('Requesting notification permission...');
             const permissionResult = await Notification.requestPermission();
             setPermission(permissionResult);
 
             if (permissionResult !== 'granted') {
+                setError('Permission denied');
                 setIsLoading(false);
                 return false;
             }
+            console.log('Permission granted');
 
-            // Get VAPID public key
+            // Step 2: Register service worker
+            console.log('Registering service worker...');
+            const registration = await registerServiceWorker();
+            if (!registration) {
+                setError('Failed to register service worker');
+                setIsLoading(false);
+                return false;
+            }
+            console.log('Service worker ready');
+
+            // Step 3: Get VAPID public key
+            console.log('Getting VAPID key...');
             const vapidPublicKey = await getVapidPublicKey();
             if (!vapidPublicKey) {
+                setError('Failed to get VAPID key');
                 setIsLoading(false);
                 return false;
             }
+            console.log('VAPID key received');
 
-            // Subscribe to push
-            const registration = await navigator.serviceWorker.ready;
+            // Step 4: Subscribe to push
+            console.log('Subscribing to push...');
             const subscription = await registration.pushManager.subscribe({
                 userVisibleOnly: true,
                 applicationServerKey: urlBase64ToUint8Array(vapidPublicKey),
             });
+            console.log('Push subscription created:', subscription);
 
-            // Send subscription to server
+            // Step 5: Send subscription to server
+            console.log('Sending subscription to server...');
             const subscriptionJson = subscription.toJSON();
             await axios.post('/api/push/subscribe', {
                 endpoint: subscriptionJson.endpoint,
@@ -98,12 +148,15 @@ export const usePushNotifications = (): UsePushNotificationsReturn => {
                     auth: subscriptionJson.keys?.auth,
                 },
             });
+            console.log('Subscription saved to server');
 
             setIsSubscribed(true);
             setIsLoading(false);
             return true;
-        } catch (error) {
-            console.error('Failed to subscribe to push notifications:', error);
+        } catch (err) {
+            const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+            console.error('Failed to subscribe to push notifications:', err);
+            setError(errorMessage);
             setIsLoading(false);
             return false;
         }
@@ -113,25 +166,31 @@ export const usePushNotifications = (): UsePushNotificationsReturn => {
         if (!isSupported) return false;
 
         setIsLoading(true);
+        setError(null);
+
         try {
-            const registration = await navigator.serviceWorker.ready;
-            const subscription = await registration.pushManager.getSubscription();
+            const registration = await navigator.serviceWorker.getRegistration();
+            if (registration) {
+                const subscription = await registration.pushManager.getSubscription();
 
-            if (subscription) {
-                // Unsubscribe from push
-                await subscription.unsubscribe();
+                if (subscription) {
+                    // Unsubscribe from push
+                    await subscription.unsubscribe();
 
-                // Remove from server
-                await axios.post('/api/push/unsubscribe', {
-                    endpoint: subscription.endpoint,
-                });
+                    // Remove from server
+                    await axios.post('/api/push/unsubscribe', {
+                        endpoint: subscription.endpoint,
+                    });
+                }
             }
 
             setIsSubscribed(false);
             setIsLoading(false);
             return true;
-        } catch (error) {
-            console.error('Failed to unsubscribe from push notifications:', error);
+        } catch (err) {
+            const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+            console.error('Failed to unsubscribe from push notifications:', err);
+            setError(errorMessage);
             setIsLoading(false);
             return false;
         }
@@ -142,6 +201,7 @@ export const usePushNotifications = (): UsePushNotificationsReturn => {
         permission,
         isSubscribed,
         isLoading,
+        error,
         subscribe,
         unsubscribe,
     };

@@ -93,7 +93,8 @@
   },
   "sidebar": {
     "my_packs": "Mis manadas",
-    "animals": "Mis mascotas"
+    "animals": "Mis mascotas",
+    "reminders": "Mis recordatorios"
   },
   "packs": {
     "title": "Gestión de Manadas",
@@ -307,7 +308,10 @@
       "none_upcoming": "No hay recordatorios próximos",
       "next": "Próximo",
       "active": "Activo",
-      "inactive": "Inactivo"
+      "inactive": "Pausado",
+      "pause": "Pausar",
+      "activate": "Activar",
+      "tomorrow": "Mañana"
     },
     "logs": {
       "title": "Historial",
@@ -378,6 +382,9 @@
     "edit_reminder": {
       "title": "Editar Recordatorio",
       "description": "Modifica la configuración del recordatorio"
+    },
+    "edit": {
+      "button": "Editar"
     },
     "delete_reminder": {
       "title": "Eliminar Recordatorio",

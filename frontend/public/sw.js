@@ -1,114 +1,79 @@
-/// <reference lib="webworker" />
-
-declare const self: ServiceWorkerGlobalScope;
-
 const CACHE_NAME = 'packtrack-v1';
-const OFFLINE_URL = '/offline';
 
-// Assets to cache
-const PRECACHE_ASSETS = [
-    '/',
-    '/offline',
-    '/icons/icon-192x192.png',
-    '/icons/icon-512x512.png',
-];
-
-// Install event - cache assets
+// Install event
 self.addEventListener('install', (event) => {
-    event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => {
-            return cache.addAll(PRECACHE_ASSETS);
-        })
-    );
+    console.log('Service Worker installing...');
     self.skipWaiting();
 });
 
-// Activate event - clean old caches
+// Activate event
 self.addEventListener('activate', (event) => {
-    event.waitUntil(
-        caches.keys().then((cacheNames) => {
-            return Promise.all(
-                cacheNames
-                    .filter((name) => name !== CACHE_NAME)
-                    .map((name) => caches.delete(name))
-            );
-        })
-    );
-    self.clients.claim();
-});
-
-// Fetch event - network first, fallback to cache
-self.addEventListener('fetch', (event) => {
-    // Skip non-GET requests
-    if (event.request.method !== 'GET') return;
-
-    // Skip API requests
-    if (event.request.url.includes('/api/')) return;
-
-    event.respondWith(
-        fetch(event.request)
-            .then((response) => {
-                // Cache successful responses
-                if (response.status === 200) {
-                    const responseClone = response.clone();
-                    caches.open(CACHE_NAME).then((cache) => {
-                        cache.put(event.request, responseClone);
-                    });
-                }
-                return response;
-            })
-            .catch(() => {
-                // Return from cache or offline page
-                return caches.match(event.request).then((response) => {
-                    return response || caches.match(OFFLINE_URL);
-                });
-            })
-    );
+    console.log('Service Worker activating...');
+    event.waitUntil(self.clients.claim());
 });
 
 // Push notification event
 self.addEventListener('push', (event) => {
-    if (!event.data) return;
+    console.log('Push received:', event);
 
-    const data = event.data.json();
+    if (!event.data) {
+        console.log('No data in push event');
+        return;
+    }
 
-    const options: NotificationOptions = {
-        body: data.body,
+    let data;
+    try {
+        data = event.data.json();
+    } catch (e) {
+        console.error('Failed to parse push data:', e);
+        data = {
+            title: 'PackTrack',
+            body: event.data.text(),
+        };
+    }
+
+    const tag = data.data?.reminder_id ? 'reminder-' + data.data.reminder_id : 'packtrack-' + Date.now();
+
+    const options = {
+        body: data.body || '',
         icon: data.icon || '/icons/icon-192x192.png',
         badge: data.badge || '/icons/badge-72x72.png',
-        data: data.data,
-        actions: data.actions,
-        tag: data.data?.reminder_id ? `reminder-${data.data.reminder_id}` : undefined,
+        data: data.data || {},
+        actions: data.actions || [
+            { action: 'complete', title: '✓ Hecho' },
+            { action: 'snooze', title: '⏰ Recordar' }
+        ],
+        tag: tag,
         renotify: true,
         requireInteraction: true,
     };
 
     event.waitUntil(
-        self.registration.showNotification(data.title, options)
+        self.registration.showNotification(data.title || 'PackTrack', options)
     );
 });
 
 // Notification click event
 self.addEventListener('notificationclick', (event) => {
+    console.log('Notification clicked:', event.action);
     event.notification.close();
 
-    const data = event.notification.data;
+    const data = event.notification.data || {};
 
     if (event.action === 'complete') {
-        // Mark as complete - could send to API
+        // Send message to client to mark as complete
         event.waitUntil(
             self.clients.matchAll({ type: 'window' }).then((clients) => {
-                // If there's an open window, send message to it
-                for (const client of clients) {
+                clients.forEach((client) => {
                     client.postMessage({
                         type: 'COMPLETE_REMINDER',
-                        reminder_id: data?.reminder_id,
+                        reminder_id: data.reminder_id,
                     });
-                }
+                });
             })
         );
     } else if (event.action === 'snooze') {
-        // Snooze for 10 minutes - re-show notification
+        // Snooze for 10 minutes
         event.waitUntil(
             new Promise((resolve) => {
                 setTimeout(() => {
@@ -127,13 +92,13 @@ self.addEventListener('notificationclick', (event) => {
         );
     } else {
         // Default action - open the app
-        const urlToOpen = data?.url || '/dashboard';
+        const urlToOpen = data.url || '/reminders';
 
         event.waitUntil(
             self.clients.matchAll({ type: 'window' }).then((clients) => {
                 // Check if there's already a window open
                 for (const client of clients) {
-                    if (client.url.includes(urlToOpen) && 'focus' in client) {
+                    if ('focus' in client) {
                         return client.focus();
                     }
                 }
@@ -145,5 +110,3 @@ self.addEventListener('notificationclick', (event) => {
         );
     }
 });
-
-export {};

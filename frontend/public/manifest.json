@@ -1,7 +1,7 @@
 {
-  "name": "PackTrack - Gestión de Mascotas",
-  "short_name": "PackTrack",
-  "description": "Gestiona las tareas y recordatorios de tus mascotas",
+  "name": "Gnatkha",
+  "short_name": "Gnatkha",
+  "description": "Pet care management",
   "start_url": "/dashboard",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -57,18 +57,5 @@
       "purpose": "maskable any"
     }
   ],
-  "categories": ["lifestyle", "utilities"],
-  "screenshots": [],
-  "shortcuts": [
-    {
-      "name": "Mis Mascotas",
-      "url": "/dashboard/animals",
-      "icons": [{ "src": "/icons/shortcut-pets.png", "sizes": "96x96" }]
-    },
-    {
-      "name": "Recordatorios",
-      "url": "/dashboard/reminders",
-      "icons": [{ "src": "/icons/shortcut-reminders.png", "sizes": "96x96" }]
-    }
-  ]
+  "categories": ["lifestyle", "utilities"]
 }
