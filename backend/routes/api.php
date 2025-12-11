@@ -9,4 +9,6 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 
 require __DIR__.'/api_pack_routes.php';
 require __DIR__.'/api_animal_routes.php';
+require __DIR__.'/api_task_routes.php';
+
 

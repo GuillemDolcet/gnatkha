@@ -22,6 +22,16 @@ class AnimalController extends Controller
         protected AnimalsRepository $repository
     ) {}
 
+    /**
+     * List all animals for the current user (from all their packs).
+     */
+    public function all(Request $request): AnonymousResourceCollection
+    {
+        $animals = $this->repository->allForUser($request->user());
+
+        return AnimalResource::collection($animals);
+    }
+
     public function index(Request $request, Pack $pack): AnonymousResourceCollection
     {
         $this->authorize('viewAny', [Animal::class, $pack]);

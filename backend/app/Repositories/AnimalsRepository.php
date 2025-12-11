@@ -52,6 +52,21 @@ class AnimalsRepository extends Repository
     }
 
     /**
+     * Get all animals for a user (from all their packs).
+     *
+     * @return Collection<int,Animal>
+     */
+    public function allForUser(\App\Models\User $user): Collection
+    {
+        $packIds = $user->packs()->pluck('packs.id');
+
+        return Animal::whereIn('pack_id', $packIds)
+            ->with(['type', 'defaultImage', 'pack'])
+            ->orderBy('name')
+            ->get();
+    }
+
+    /**
      * Find an animal with its type loaded.
      */
     public function findWithType(Animal $animal): Animal

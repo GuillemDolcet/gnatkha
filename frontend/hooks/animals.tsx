@@ -31,6 +31,19 @@ export const useAnimals = () => {
         }
     };
 
+    const fetchAnimals = useCallback(async () => {
+        setIsLoading(true);
+        try {
+            const res = await axios.get('/api/animals');
+            setAnimals(res.data.data as Animal[]);
+            setError(null);
+        } catch (err) {
+            setError(err as Error);
+        } finally {
+            setIsLoading(false);
+        }
+    }, []);
+
     const fetchAnimalsForPack = useCallback(async (packId: number) => {
         setIsLoading(true);
         try {
@@ -226,6 +239,7 @@ export const useAnimals = () => {
         animalsByPack,
         error,
         isLoading,
+        fetchAnimals,
         fetchAnimalsForPack,
         fetchAnimal,
         fetchAllAnimals,

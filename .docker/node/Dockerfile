@@ -4,5 +4,5 @@ ARG uid=9999
 
 RUN usermod -u $uid node
 
-RUN npm install -g npm@11.5.2
+RUN npm install -g npm@11.7.0
 RUN npm install -g pnpm

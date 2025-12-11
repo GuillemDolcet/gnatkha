@@ -93,7 +93,8 @@
   },
   "sidebar": {
     "my_packs": "Mis manadas",
-    "animals": "Mis mascotas"
+    "animals": "Mis mascotas",
+    "reminders": "Mis recordatorios"
   },
   "packs": {
     "title": "Gestión de Manadas",
@@ -295,6 +296,142 @@
       "image_image": "El archivo debe ser una imagen",
       "image_mimes": "La imagen debe ser jpeg, png, jpg, gif o webp",
       "image_max": "La imagen no puede superar los 5MB"
+    }
+  },
+  "tasks": {
+    "title": "Tareas",
+    "reminders": {
+      "title": "Recordatorios",
+      "empty": "No hay recordatorios configurados",
+      "add": "Añadir Recordatorio",
+      "upcoming": "Próximos recordatorios",
+      "none_upcoming": "No hay recordatorios próximos",
+      "next": "Próximo",
+      "active": "Activo",
+      "inactive": "Pausado",
+      "pause": "Pausar",
+      "activate": "Activar",
+      "tomorrow": "Mañana"
+    },
+    "logs": {
+      "title": "Historial",
+      "empty": "No hay registros",
+      "add": "Registrar Tarea",
+      "today": "Hoy",
+      "recent": "Recientes",
+      "completed_by": "Completado por {user}",
+      "completed_at": "Completado"
+    },
+    "types": {
+      "feed": "Alimentar",
+      "walk": "Paseo",
+      "vet": "Veterinario",
+      "vaccine": "Vacuna",
+      "medication": "Medicación",
+      "grooming": "Aseo",
+      "training": "Entrenamiento",
+      "play": "Jugar",
+      "bath": "Baño",
+      "weight": "Peso",
+      "other": "Otro"
+    },
+    "frequency": {
+      "once": "Una vez",
+      "daily": "Diario",
+      "weekly": "Semanal",
+      "monthly": "Mensual"
+    },
+    "days": {
+      "0": "Domingo",
+      "1": "Lunes",
+      "2": "Martes",
+      "3": "Miércoles",
+      "4": "Jueves",
+      "5": "Viernes",
+      "6": "Sábado"
+    },
+    "form": {
+      "title_label": "Título",
+      "title_placeholder": "Ej: Dar de comer",
+      "description_label": "Descripción (opcional)",
+      "description_placeholder": "Detalles adicionales...",
+      "type_label": "Tipo de tarea",
+      "type_placeholder": "Selecciona un tipo",
+      "animal_label": "Mascota",
+      "animal_placeholder": "Selecciona una mascota",
+      "frequency_label": "Frecuencia",
+      "frequency_placeholder": "Selecciona frecuencia",
+      "time_label": "Hora",
+      "date_label": "Fecha",
+      "day_of_week_label": "Día de la semana",
+      "day_of_week_placeholder": "Selecciona un día",
+      "day_of_month_label": "Día del mes",
+      "day_of_month_placeholder": "Selecciona un día",
+      "notes_label": "Notas (opcional)",
+      "notes_placeholder": "Observaciones...",
+      "cancel": "Cancelar",
+      "save": "Guardar",
+      "saving": "Guardando...",
+      "create": "Crear",
+      "creating": "Creando..."
+    },
+    "create_reminder": {
+      "title": "Nuevo Recordatorio",
+      "description": "Configura un recordatorio para tu mascota"
+    },
+    "edit_reminder": {
+      "title": "Editar Recordatorio",
+      "description": "Modifica la configuración del recordatorio"
+    },
+    "edit": {
+      "button": "Editar"
+    },
+    "delete_reminder": {
+      "title": "Eliminar Recordatorio",
+      "description": "¿Estás seguro de que quieres eliminar este recordatorio?",
+      "confirm": "Eliminar",
+      "cancel": "Cancelar"
+    },
+    "create_log": {
+      "title": "Registrar Tarea",
+      "description": "Registra una tarea realizada"
+    },
+    "edit_log": {
+      "title": "Editar Registro",
+      "description": "Modifica el registro de la tarea"
+    },
+    "delete_log": {
+      "title": "Eliminar Registro",
+      "description": "¿Estás seguro de que quieres eliminar este registro?",
+      "confirm": "Eliminar",
+      "cancel": "Cancelar"
+    },
+    "toast": {
+      "reminder_created": "Recordatorio creado",
+      "reminder_updated": "Recordatorio actualizado",
+      "reminder_deleted": "Recordatorio eliminado",
+      "reminder_toggled": "Recordatorio actualizado",
+      "log_created": "Tarea registrada",
+      "log_updated": "Registro actualizado",
+      "log_deleted": "Registro eliminado",
+      "error_forbidden": "No tienes permisos",
+      "error_not_found": "No encontrado",
+      "error_unknown": "Error inesperado"
+    },
+    "notifications": {
+      "title": "Notificaciones",
+      "enable": "Activar notificaciones",
+      "disable": "Desactivar notificaciones",
+      "enabled": "Notificaciones activadas",
+      "disabled": "Notificaciones desactivadas",
+      "not_supported": "Tu navegador no soporta notificaciones",
+      "permission_denied": "Permiso denegado",
+      "description": "Recibe recordatorios en tu dispositivo"
+    },
+    "quick_log": {
+      "title": "Registro rápido",
+      "done": "¡Hecho!",
+      "mark_done": "Marcar como hecho"
     }
   }
 }
